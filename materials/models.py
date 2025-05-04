@@ -2,7 +2,7 @@ from django.db import models
 
 class Course(models.Model):
     title = models.CharField('Название', max_length=255)
-    preview = models.ImageField('Превью', upload_to='courses/previews/')
+    preview = models.ImageField('Превью', upload_to='courses/previews/', null=True, blank=True)
     description = models.TextField('Описание')
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField('Дата обновления', auto_now=True)
@@ -19,7 +19,7 @@ class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons', verbose_name='Курс')
     title = models.CharField('Название', max_length=255)
     description = models.TextField('Описание')
-    preview = models.ImageField('Превью', upload_to='lessons/previews/')
+    preview = models.ImageField('Превью', upload_to='lessons/previews/', null=True, blank=True)
     video_url = models.URLField('Ссылка на видео')
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField('Дата обновления', auto_now=True)

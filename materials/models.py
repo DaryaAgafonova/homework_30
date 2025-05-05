@@ -1,9 +1,11 @@
 from django.db import models
+from django.conf import settings
 
 class Course(models.Model):
     title = models.CharField('Название', max_length=255)
     preview = models.ImageField('Превью', upload_to='courses/previews/', null=True, blank=True)
     description = models.TextField('Описание')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='owned_courses', verbose_name='Владелец')
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField('Дата обновления', auto_now=True)
 
@@ -21,6 +23,7 @@ class Lesson(models.Model):
     description = models.TextField('Описание')
     preview = models.ImageField('Превью', upload_to='lessons/previews/', null=True, blank=True)
     video_url = models.URLField('Ссылка на видео')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='owned_lessons', verbose_name='Владелец')
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField('Дата обновления', auto_now=True)
 

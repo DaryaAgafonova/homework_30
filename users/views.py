@@ -47,6 +47,10 @@ class PaymentViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Payment.objects.none()
+        if not self.request.user.is_authenticated:
+            return Payment.objects.none()
         if self.request.user.is_staff or self.request.user.groups.filter(name='Модераторы').exists():
             return Payment.objects.all()
         return Payment.objects.filter(user=self.request.user)

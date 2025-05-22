@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
-from materials.models import Course, Lesson
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -52,8 +51,8 @@ class Payment(models.Model):
     
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments', verbose_name='Пользователь')
     payment_date = models.DateTimeField('Дата оплаты', auto_now_add=True)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='payments', verbose_name='Оплаченный курс', null=True, blank=True)
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='payments', verbose_name='Оплаченный урок', null=True, blank=True)
+    course = models.ForeignKey('materials.Course', on_delete=models.CASCADE, related_name='payments', verbose_name='Оплаченный курс', null=True, blank=True)
+    lesson = models.ForeignKey('materials.Lesson', on_delete=models.CASCADE, related_name='payments', verbose_name='Оплаченный урок', null=True, blank=True)
     amount = models.DecimalField('Сумма оплаты', max_digits=10, decimal_places=2)
     payment_method = models.CharField('Способ оплаты', max_length=10, choices=PAYMENT_METHOD_CHOICES)
     

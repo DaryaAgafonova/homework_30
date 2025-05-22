@@ -3,13 +3,10 @@ from rest_framework.routers import DefaultRouter
 from .views import UserViewSet, PaymentViewSet, UserRegistrationView
 
 router = DefaultRouter()
-router.register(r'', UserViewSet)
-
-payments_router = DefaultRouter()
-payments_router.register(r'', PaymentViewSet, basename='payment')
+router.register(r'users', UserViewSet)
+router.register(r'payments', PaymentViewSet, basename='payment')
 
 urlpatterns = [
-    path('register/', UserRegistrationView.as_view(), name='register'),
+    path('register/', UserRegistrationView.as_view(), name='user-register'),
     path('', include(router.urls)),
-    path('payments/', include(payments_router.urls)),
 ]

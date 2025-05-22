@@ -6,6 +6,9 @@ from .permissions import IsOwnerOrModeratorOrReadOnly, IsOwnerOrReadOnly
 from rest_framework.response import Response
 from rest_framework import status
 from .paginators import CoursePagination, LessonPagination
+from .tasks import send_course_update_email
+from django.utils import timezone
+from datetime import timedelta
 
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
@@ -28,7 +31,13 @@ class LessonListCreateAPIView(generics.ListCreateAPIView):
     pagination_class = LessonPagination
     
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        lesson = serializer.save(owner=self.request.user)
+        course = lesson.course
+        # Проверка: если курс не обновлялся более 4 часов
+        if timezone.now() - course.updated_at > timedelta(hours=4):
+            subscribers = course.subscription_set.all()
+            for sub in subscribers:
+                send_course_update_email.delay(sub.user.email, course.title, lesson.title)
 
 class LessonRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Lesson.objects.all()

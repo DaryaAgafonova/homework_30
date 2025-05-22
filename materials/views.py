@@ -40,6 +40,10 @@ class SubscriptionCreateDestroyAPIView(generics.CreateAPIView, generics.DestroyA
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Subscription.objects.none()
+        if not self.request.user.is_authenticated:
+            return Subscription.objects.none()
         return Subscription.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):

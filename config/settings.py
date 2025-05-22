@@ -25,6 +25,8 @@ INSTALLED_APPS = [
     'users',
     'materials',
     'rest_framework_simplejwt',
+    'drf_yasg',
+    'payments',
 ]
 
 MIDDLEWARE = [
@@ -140,3 +142,5 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(hours=1),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
+
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')

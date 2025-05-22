@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from .validators import validate_youtube_url
 
 class Course(models.Model):
     title = models.CharField('Название', max_length=255)
@@ -22,7 +23,7 @@ class Lesson(models.Model):
     title = models.CharField('Название', max_length=255)
     description = models.TextField('Описание')
     preview = models.ImageField('Превью', upload_to='lessons/previews/', null=True, blank=True)
-    video_url = models.URLField('Ссылка на видео')
+    video_url = models.URLField('Ссылка на видео', validators=[validate_youtube_url])
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='owned_lessons', verbose_name='Владелец')
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField('Дата обновления', auto_now=True)
@@ -34,3 +35,16 @@ class Lesson(models.Model):
 
     def __str__(self):
         return f"{self.course.title} - {self.title}"
+
+class Subscription(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='subscriptions', verbose_name='Пользователь')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='subscriptions', verbose_name='Курс')
+    created_at = models.DateTimeField('Дата подписки', auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+        unique_together = ['user', 'course']
+
+    def __str__(self):
+        return f"{self.user.email} - {self.course.title}"

@@ -14,16 +14,14 @@ class PaymentSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'phone', 'city', 'avatar']
-        read_only_fields = ['id', 'email']
+        fields = '__all__'
 
 class UserPaymentHistorySerializer(serializers.ModelSerializer):
     payments = PaymentSerializer(many=True, read_only=True)
     
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'phone', 'city', 'avatar', 'payments']
-        read_only_fields = ['id', 'email']
+        fields = ['id', 'email', 'payments']
 
 class UserPublicSerializer(serializers.ModelSerializer):
     class Meta:

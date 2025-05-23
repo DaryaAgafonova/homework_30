@@ -33,7 +33,6 @@ class LessonListCreateAPIView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         lesson = serializer.save(owner=self.request.user)
         course = lesson.course
-        # Проверка: если курс не обновлялся более 4 часов
         if timezone.now() - course.updated_at > timedelta(hours=4):
             subscribers = course.subscription_set.all()
             for sub in subscribers:
